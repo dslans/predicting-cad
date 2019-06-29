@@ -150,9 +150,9 @@ title("ROC Curve")
 
 ### Accuracy 
 ```{r, warning=FALSE}
-# sensitivity
-sn_index <- min(which(perf@y.values[[1]] >= 0.95))+1
-pr_cutoff <- perf@alpha.values[[1]][sn_index]
+# specificity
+sp_index <- min(which(1-perf@x.values[[1]] <= 0.90))
+pr_cutoff <- perf@alpha.values[[1]][sp_index]
 
 # Confusion Matrix
 preds_class <- ifelse(predictions$phat > pr_cutoff, 1, 0)

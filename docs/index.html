@@ -311,9 +311,9 @@ title(&quot;ROC Curve&quot;)</code></pre>
 </div>
 <div id="accuracy" class="section level3">
 <h3>Accuracy</h3>
-<pre class="r"><code># sensitivity
-sn_index &lt;- min(which(perf@y.values[[1]] &gt;= 0.95))+1
-pr_cutoff &lt;- perf@alpha.values[[1]][sn_index]
+<pre class="r"><code># specificity
+sp_index &lt;- min(which(1-perf@x.values[[1]] &lt;= 0.90))
+pr_cutoff &lt;- perf@alpha.values[[1]][sp_index]
 
 # Confusion Matrix
 preds_class &lt;- ifelse(predictions$phat &gt; pr_cutoff, 1, 0)
@@ -322,26 +322,26 @@ confusionMatrix(as.factor(preds_class),as.factor(cad$CCTA.NoCAD), positive=&quot
 ## 
 ##           Reference
 ## Prediction   0   1
-##          0  54   1
-##          1 116  25
+##          0 154  15
+##          1  16  11
 ##                                           
-##                Accuracy : 0.4031          
-##                  95% CI : (0.3338, 0.4753)
+##                Accuracy : 0.8418          
+##                  95% CI : (0.7831, 0.8899)
 ##     No Information Rate : 0.8673          
-##     P-Value [Acc &gt; NIR] : 1               
+##     P-Value [Acc &gt; NIR] : 0.8752          
 ##                                           
-##                   Kappa : 0.0972          
+##                   Kappa : 0.3237          
 ##                                           
-##  Mcnemar's Test P-Value : &lt;2e-16          
+##  Mcnemar's Test P-Value : 1.0000          
 ##                                           
-##             Sensitivity : 0.9615          
-##             Specificity : 0.3176          
-##          Pos Pred Value : 0.1773          
-##          Neg Pred Value : 0.9818          
-##              Prevalence : 0.1327          
-##          Detection Rate : 0.1276          
-##    Detection Prevalence : 0.7194          
-##       Balanced Accuracy : 0.6396          
+##             Sensitivity : 0.42308         
+##             Specificity : 0.90588         
+##          Pos Pred Value : 0.40741         
+##          Neg Pred Value : 0.91124         
+##              Prevalence : 0.13265         
+##          Detection Rate : 0.05612         
+##    Detection Prevalence : 0.13776         
+##       Balanced Accuracy : 0.66448         
 ##                                           
 ##        'Positive' Class : 1               
 ## </code></pre>
