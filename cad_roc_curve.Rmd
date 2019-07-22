@@ -58,30 +58,30 @@ apply(prop.table(table(cad$CCTA.HRP))*100, 1, function(x) sprintf( "%.2f%%", x))
 ```{r, warning=FALSE}
 library(caret)
 # folds <- createFolds(factor(cad$CCTA.HRP), k = 5, list = T)
-# 
+#
 # head(folds)
 # cad[folds[[1]],]
 
 # Assign blocks to data set
 kfolder <- function(data, n_folds){
   set.seed(500)
-  
+
   # set data frame
   d <- data
-  
+
   # store data frame folds in a list
   foldList <- list()
-  
+
   # create k-1 folds
   for(i in seq(n_folds - 1)){
     foldi <- d[sample(nrow(d), nrow(data) / n_folds),]
     foldList[[i]] <- foldi
     d <- d[!(rownames(d) %in% rownames(foldi)),]
   }
-  
+
   # place remaining data in final fold
   foldList[[n_folds]] <- d
-  
+
   # Return the list object
   return(foldList)
 }
@@ -98,25 +98,25 @@ cvModeler <- function(df, n_folds){
   set.seed(100)
   predprobs <- list()
   for(i in seq(n_folds)){
-    
+
     # Train and Test Data
     train <- df[!(rownames(df) %in% rownames(fold_list[[i]])),]
     test <- df[(rownames(df) %in% rownames(fold_list[[i]])),]
-    
+
     X <- as.matrix(train[, names(train) %in% protein_vars])
     y <- as.matrix(train$CCTA.NoCAD)
     Xtest <- as.matrix(test[, names(test) %in% protein_vars])
     ytest <- as.matrix(test$CCTA.NoCAD)
 
     dtrain <- xgb.DMatrix(data = X, label = y)
-    xgb <- xgboost(data = dtrain, 
-                   max.depth = 6, 
-                   eta = .7, 
-                   nthread = 2, 
-                   nrounds = 20, 
+    xgb <- xgboost(data = dtrain,
+                   max.depth = 6,
+                   eta = .7,
+                   nthread = 2,
+                   nrounds = 20,
                    objective = "binary:logistic",
                    verbose = 0)
-    
+
     predprobs[[i]] <- predict(xgb, as.matrix(Xtest))
   }
   return(predprobs)
@@ -148,7 +148,7 @@ title("ROC Curve")
 
 
 
-### Accuracy 
+### Accuracy
 ```{r, warning=FALSE}
 # specificity
 sp_index <- min(which(1-perf@x.values[[1]] <= 0.90))
@@ -158,4 +158,3 @@ pr_cutoff <- perf@alpha.values[[1]][sp_index]
 preds_class <- ifelse(predictions$phat > pr_cutoff, 1, 0)
 confusionMatrix(as.factor(preds_class),as.factor(cad$CCTA.NoCAD), positive="1")
 ```
-
